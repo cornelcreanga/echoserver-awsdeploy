@@ -1,5 +1,5 @@
 resource "aws_iam_role" "build" {
-  name = "incredible-website-build-role"
+  name = "echoserver-build-role"
 
   assume_role_policy = <<EOF
 {
@@ -39,7 +39,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "beanstalk_policy" {
-  name = "incredible-website-beanstalk-policy"
+  name = "echoserver-beanstalk-policy"
   role = "${aws_iam_role.build.id}"
 
   policy = <<POLICY
@@ -234,7 +234,7 @@ POLICY
 }
 
 resource "aws_iam_instance_profile" "build" {
-  name = "incredible-website-build-profile"
+  name = "echoserver-build-profile"
   role = "${aws_iam_role.build.name}"
 }
 
@@ -243,10 +243,10 @@ resource "aws_s3_bucket_policy" "artifacts" {
   policy =<<POLICY
 {
   "Version": "2012-10-17",
-  "Id": "incredible-website-artifacts-policy",
+  "Id": "echoserver-artifacts-policy",
   "Statement": [
     {
-      "Sid": "incredible-website-access",
+      "Sid": "echoserver-access",
       "Effect": "Allow",
       "Principal": {
         "AWS": "${aws_iam_role.build.arn}"
@@ -255,7 +255,7 @@ resource "aws_s3_bucket_policy" "artifacts" {
       "Resource": ["${aws_s3_bucket.artifacts.arn}"]
     },
     {
-      "Sid": "incredible-website-child-access",
+      "Sid": "echoserver-child-access",
       "Effect": "Allow",
       "Principal": {
         "AWS": "${aws_iam_role.build.arn}"
